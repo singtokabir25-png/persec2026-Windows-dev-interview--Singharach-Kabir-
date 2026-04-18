@@ -1,0 +1,48 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Solution {
+    public List<string> Autocomplete(string search, string[] items, int maxResult) {
+        if (string.IsNullOrEmpty(search)) return new List<string>();
+
+        return items
+            // 1. ค้นหาคำที่มี search เป็นส่วนหนึ่ง โดยไม่สนใจตัวพิมพ์เล็ก-ใหญ่ (Ignore Case)
+            .Where(item => item.Contains(search, StringComparison.OrdinalIgnoreCase))
+            
+            // 2. เรียงลำดับตามเงื่อนไขที่โจทย์กำหนด
+            .OrderBy(item => {
+                // เปลี่ยนเป็นตัวเล็กทั้งหมดเพื่อการเปรียบเทียบที่แม่นยำ
+                string lowerItem = item.ToLower();
+                string lowerSearch = search.ToLower();
+
+                // - กรณีขึ้นต้นด้วย search ให้ความสำคัญลำดับที่ 0 (แรกสุด)
+                if (lowerItem.StartsWith(lowerSearch)) return 0;
+                
+                // - กรณีลงท้ายด้วย search ให้ความสำคัญลำดับที่ 2 (หลังสุดในกลุ่มที่เจอ)
+                if (lowerItem.EndsWith(lowerSearch)) return 2;
+                
+                // - กรณีอยู่ระหว่างกลาง ให้ความสำคัญลำดับที่ 1
+                return 1;
+            })
+            // เรียงตามตัวอักษรเพิ่มเติมในกรณีที่อยู่ในกลุ่มลำดับเดียวกัน (Optional)
+            .ThenBy(item => item) 
+            
+            // 3. จำกัดจำนวนผลลัพธ์ตามค่า maxResult
+            .Take(maxResult)
+            .ToList();
+    }
+}
+
+// ส่วนทดสอบผลลัพธ์ตามตัวอย่างในโจทย์
+public class Program {
+    public static void Main() {
+        Solution sol = new Solution();
+        string[] items = { "Mother", "Think", "Worthy", "Apple", "Android" };
+        
+        var result = sol.Autocomplete("th", items, 2);
+        
+        Console.WriteLine("Result: [" + string.Join(", ", result) + "]");
+        // ผลลัพธ์ที่ได้จะเป็น: ["Think", "Mother"]
+    }
+}
