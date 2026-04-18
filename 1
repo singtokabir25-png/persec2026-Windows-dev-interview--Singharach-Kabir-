@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+// สร้าง Class เพื่อเก็บ Function ตามโจทย์ข้อ 1
+public class Solution
+{
+    public bool IsValidBrackets(string s)
+    {
+        Stack<char> stack = new Stack<char>();
+        var map = new Dictionary<char, char> {
+            {')','('},
+            {']','['},
+            {'}','{'}
+        };
+
+        foreach (char c in s)
+        {
+            if (map.ContainsValue(c))
+            {
+                stack.Push(c);
+            }
+            else if (map.ContainsKey(c))
+            {
+                if (stack.Count == 0 || stack.Pop() != map[c])
+                {
+                    return false;
+                }
+            }
+        }
+        return stack.Count == 0;
+    }
+}
+
+// ส่วนรันโปรแกรมหลัก
+public class Program
+{
+    public static void Main()
+    {
+        Solution sol = new Solution();
+
+        // ทดสอบเคสต่างๆ ตามโจทย์
+        string[] testCases = { "()", "([{)", "([{}])", "([[{}]])", ")", "{", "([)]" };
+
+        foreach (var test in testCases)
+        {
+            bool result = sol.IsValidBrackets(test);
+            Console.WriteLine($"Input: {test} => Result: {result}");
+        }
+    }
+}
