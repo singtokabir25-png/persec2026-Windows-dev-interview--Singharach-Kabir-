@@ -1,0 +1,33 @@
+uing System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+public class Program
+{
+    public static void Main()
+    {
+        // ข้อมูลชุดที่ 1
+        string[] data1 = { "TH19", "SG20", "TH2" };
+        var res1 = CustomSort(data1);
+        Console.WriteLine("Result 1: [" + string.Join(", ", res1) + "]");
+
+        // ข้อมูลชุดที่ 2
+        string[] data2 = { "TH10", "TH3Netflix", "TH1", "TH7" };
+        var res2 = CustomSort(data2);
+        Console.WriteLine("Result 2: [" + string.Join(", ", res2) + "]");
+    }
+
+    // ฟังก์ชันเรียงลำดับตามโจทย์ข้อ 2
+    public static List<string> CustomSort(string[] items)
+    {
+        return items
+            .OrderBy(x => Regex.Match(x, @"^[A-Za-z]+").Value)
+            .ThenBy(x =>
+            {
+                string numPart = Regex.Match(x, @"\d+").Value;
+                return int.TryParse(numPart, out int val) ? val : 0;
+            })
+            .ThenBy(x => x)
+            .ToList();
+    }
