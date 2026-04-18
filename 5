@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Solution
+{
+    public List<int> Tribonacci(int[] signature, int n)
+    {
+        // สร้าง List เพื่อเก็บผลลัพธ์ โดยเริ่มจากค่า signature ที่ให้มาตามจำนวน n
+        // ใช้ .Take(n) เพื่อรองรับกรณีที่ n น้อยกว่าจำนวน signature (เช่น n=1 หรือ 2)
+        List<int> result = signature.Take(n).ToList();
+
+        // คำนวณเพิ่มจนกว่าจะได้จำนวนครบตาม n ที่ต้องการ
+        while (result.Count < n)
+        {
+            // หาผลรวมของ 3 ตัวล่าสุดใน List
+            int nextValue = result.Skip(result.Count - 3).Take(3).Sum();
+            result.Add(nextValue);
+        }
+
+        return result;
+    }
+}
+
+// ส่วนสำหรับทดสอบผลลัพธ์
+public class Program
+{
+    public static void Main()
+    {
+        Solution sol = new Solution();
+
+        // ตัวอย่างที่ 1: f([1, 3, 5], 5) => [1, 3, 5, 9, 17]
+        int[] sig1 = { 1, 3, 5 };
+        var res1 = sol.Tribonacci(sig1, 5);
+        Console.WriteLine("f([1, 3, 5], 5) => [" + string.Join(", ", res1) + "]");
+
+        // ตัวอย่างที่ 2: f([2, 2, 2], 3) => [2, 2, 2]
+        int[] sig2 = { 2, 2, 2 };
+        var res2 = sol.Tribonacci(sig2, 3);
+        Console.WriteLine("f([2, 2, 2], 3) => [" + string.Join(", ", res2) + "]");
+
+        // ตัวอย่างที่ 3: f([10, 10, 10], 4) => [10, 10, 10, 30]
+        int[] sig3 = { 10, 10, 10 };
+        var res3 = sol.Tribonacci(sig3, 4);
+        Console.WriteLine("f([10, 10, 10], 4) => [" + string.Join(", ", res3) + "]");
+    }
+}
